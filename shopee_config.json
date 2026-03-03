@@ -1,0 +1,6 @@
+{
+    "partnerId": "",
+    "partnerKey": "",
+    "shopId": "",
+    "redirectUrl": "http://localhost:3001/api/shopee/auth/callback"
+}
