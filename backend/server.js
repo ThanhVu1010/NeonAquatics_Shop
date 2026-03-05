@@ -23,8 +23,12 @@ const PORT = process.env.PORT || 3001;
 
 // Config uploads directory
 const uploadDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
+try {
+    if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+    }
+} catch (e) {
+    console.warn("⚠️ Vercel/Serverless environment detected (Read-only file system). Skipping auto-create /uploads directory.");
 }
 
 // Middleware
