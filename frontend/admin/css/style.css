@@ -258,7 +258,6 @@ body {
 /* ============= Tab Content ============= */
 .tab-content {
     display: none;
-    padding: 32px;
     animation: fadeIn 0.3s ease;
 }
 
@@ -1450,9 +1449,7 @@ body {
         display: block;
     }
 
-    .tab-content {
-        padding: 20px 16px;
-    }
+    .tab-content {}
 
     .top-header {
         padding: 0 16px;
