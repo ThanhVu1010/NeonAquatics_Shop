@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const { db } = require('../config/db');
 
-const JWT_SECRET = process.env.JWT_SECRET || crypto.randomBytes(32).toString('hex');
+const JWT_SECRET = process.env.JWT_SECRET || 'mat-khau-admin-mac-dinh-thuy-sinh-bao-gia';
 
 exports.login = async (req, res) => {
     try {
