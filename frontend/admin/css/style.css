@@ -1505,3 +1505,13 @@ body {
         border-radius: var(--radius-md);
     }
 }
+
+@media (min-width: 768px) {
+    body.admin-sidebar-collapsed #sidebar {
+        transform: translateX(-100%) !important;
+    }
+
+    body.admin-sidebar-collapsed #adminMain {
+        margin-left: 0 !important;
+    }
+}

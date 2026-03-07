@@ -1,6 +1,7 @@
 // Keyboard Shortcuts
 document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
+        if (typeof closeSidebar === 'function') closeSidebar();
         if (typeof closeCategoryModal === 'function') closeCategoryModal();
         if (typeof closeProductModal === 'function') closeProductModal();
         if (typeof closeCustomerModal === 'function') closeCustomerModal();
@@ -23,13 +24,12 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 
 // Application Init
 async function init() {
-    if (!checkAuth()) return; // Stop if not authenticated
+    if (!(await checkAuth())) return; // Stop if not authenticated
 
     await loadSettingsData();
     switchTab('dashboard'); // This handles renderDashboard and UI switching
     updateClock();
     setInterval(updateClock, 1000);
-    checkShopeeConnection().catch(() => { });
 }
 
 // Ensure init is run when DOM is ready

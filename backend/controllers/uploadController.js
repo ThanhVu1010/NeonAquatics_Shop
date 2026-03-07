@@ -3,7 +3,15 @@ const path = require('path');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../../uploads')); // Assuming backend/controllers is dir
+        const isVercel = process.env.VERCEL === '1';
+        let uploadDir = isVercel ? '/tmp/uploads' : path.join(__dirname, '../../uploads');
+
+        // Ensure folder exists (fs is required)
+        const fs = require('fs');
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        cb(null, uploadDir);
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);

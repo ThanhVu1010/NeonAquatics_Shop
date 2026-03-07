@@ -103,9 +103,28 @@
         const API_BASE = window.location.origin;
 
         // Nếu đã có token, chuyển thẳng vào trang chính
-        if (localStorage.getItem('bgm_token')) {
-            window.location.href = 'index.html';
-        }
+        (async function verifyExistingSession() {
+            const token = localStorage.getItem('bgm_token');
+            if (!token) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/api/auth/verify`, {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    cache: 'no-store'
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    window.location.href = 'index.html';
+                } else {
+                    localStorage.removeItem('bgm_token');
+                    localStorage.removeItem('bgm_user');
+                }
+            } catch (err) {
+                localStorage.removeItem('bgm_token');
+                localStorage.removeItem('bgm_user');
+            }
+        })();
 
         async function login() {
             const usernameInput = document.getElementById('loginUsername').value;
