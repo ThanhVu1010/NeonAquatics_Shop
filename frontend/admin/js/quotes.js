@@ -136,9 +136,9 @@ async function openQuoteModal(id) {
     await populateCustomerSelect();
     const modal = document.getElementById('quoteModal');
     if (!modal) return;
-    modal.classList.add('active');
+    modal.style.display = 'flex';
     document.getElementById('quoteModalTitle').textContent = id ? 'Sửa báo giá' : 'Tạo báo giá mới';
-    document.getElementById('editQuoteId').value = id || '';
+    document.getElementById('quoteId').value = id || '';
 
     if (id) {
         const q = quotes.find(qt => qt.id === id);
@@ -162,7 +162,7 @@ async function openQuoteModal(id) {
 
 function closeQuoteModal() {
     const modal = document.getElementById('quoteModal');
-    if (modal) modal.classList.remove('active');
+    if (modal) modal.style.display = 'none';
     currentQuoteItems = [];
 }
 
@@ -175,7 +175,7 @@ async function saveQuote() {
         return sum + item.price * item.qty * (1 - item.discount / 100);
     }, 0);
 
-    const editId = document.getElementById('editQuoteId').value;
+    const editId = document.getElementById('quoteId').value;
     const quoteData = {
         customer,
         customerPhone: document.getElementById('quoteCustomerPhone').value.trim(),
@@ -455,12 +455,12 @@ function previewQuote(id) {
     `;
 
     document.getElementById('quotePreviewContent').innerHTML = html;
-    document.getElementById('quotePreviewModal').classList.add('active');
+    document.getElementById('quotePreviewModal').style.display = 'flex';
 }
 
 function closeQuotePreview() {
     const modal = document.getElementById('quotePreviewModal');
-    if (modal) modal.classList.remove('active');
+    if (modal) modal.style.display = 'none';
 }
 
 function printQuote() {

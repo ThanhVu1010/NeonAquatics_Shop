@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="vi">
+<html lang="vi" class="dark">
 
 <head>
     <meta charset="utf-8" />
@@ -20,10 +20,10 @@
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#0B0F19",
-                        "primary-accent": "#2563eb",
-                        "background-light": "#f5f8f8",
-                        "background-dark": "#0B0F19",
+                        "primary": "#0E3A43",
+                        "primary-accent": "#22D3EE",
+                        "background-light": "#061922",
+                        "background-dark": "#061922",
                     },
                     fontFamily: {
                         "display": ["Space Grotesk"]
@@ -41,9 +41,13 @@
     <div class="flex min-h-screen w-full">
         <!-- Sidebar Navigation -->
         <aside id="sidebar"
-            class="w-64 border-r border-slate-200 dark:border-primary-accent/10 bg-background-light dark:bg-background-dark flex flex-col fixed h-full z-30">
+            class="w-64 border-r border-slate-200 dark:border-primary-accent/10 bg-background-light dark:bg-background-dark flex flex-col fixed h-full z-30 transform -translate-x-full md:translate-x-0 transition-transform duration-300 shadow-xl md:shadow-none">
             <div
                 class="p-6 flex flex-col items-center justify-center border-b border-slate-200 dark:border-primary-accent/10 relative overflow-hidden group mb-2">
+                <button type="button" onclick="closeSidebar()" aria-label="Đóng menu"
+                    class="absolute top-3 right-3 md:hidden p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-primary/10">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
                 <div class="rounded-xl overflow-hidden shadow-md">
                     <img src="assets/logo.jpg" alt="NeonAquatics Logo"
                         class="w-20 h-20 object-contain rounded-xl shadow-lg border-2 border-primary-accent mx-auto group-hover:scale-105 transition-transform duration-500">
@@ -56,14 +60,9 @@
                     <span class="font-medium text-sm">Tổng quan</span>
                 </a>
                 <a class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-primary/5 hover:text-primary-accent transition-colors"
-                    data-tab="categories" onclick="switchTab('categories')">
-                    <span class="material-symbols-outlined">category</span>
-                    <span class="font-medium text-sm">Danh mục</span>
-                </a>
-                <a class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-primary/5 hover:text-primary-accent transition-colors"
                     data-tab="products" onclick="switchTab('products')">
                     <span class="material-symbols-outlined">inventory_2</span>
-                    <span class="font-medium text-sm">Sản phẩm</span>
+                    <span class="font-medium text-sm">Nguồn hàng</span>
                 </a>
                 <a class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-primary/5 hover:text-primary-accent transition-colors"
                     data-tab="quotes" onclick="switchTab('quotes')">
@@ -75,7 +74,7 @@
                     <span class="material-symbols-outlined">group</span>
                     <span class="font-medium text-sm">Khách hàng</span>
                 </a>
-                <a class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-primary/5 hover:text-primary-accent transition-colors"
+                <a class="nav-item hidden flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-primary/5 hover:text-primary-accent transition-colors"
                     data-tab="shopee" onclick="switchTab('shopee')">
                     <span class="material-symbols-outlined">storefront</span>
                     <span class="font-medium text-sm">Shopee</span>
@@ -94,28 +93,33 @@
                 </button>
             </div>
         </aside>
-        <main class="ml-64 flex-1 flex flex-col min-w-0">
+        <div id="sidebarOverlay" class="fixed inset-0 bg-black/45 z-20 hidden md:hidden" onclick="closeSidebar()"></div>
+        <main id="adminMain" class="ml-0 md:ml-64 flex-1 flex flex-col min-w-0">
             <!-- Header -->
-            <header class="flex justify-between items-center p-6 md:p-8 pb-0">
-                <div>
+            <header class="flex justify-between items-center gap-3 p-6 md:p-8 pb-0">
+                <button type="button" onclick="toggleSidebar()" aria-label="Mở menu"
+                    class="md:hidden bg-slate-100 dark:bg-primary/5 p-2 rounded-lg border border-slate-200 dark:border-primary-accent/20 text-slate-600 dark:text-slate-300">
+                    <span class="material-symbols-outlined text-[20px]">menu</span>
+                </button>
+                <div class="flex-1 min-w-0">
                     <h2 class="text-3xl font-bold tracking-tight" id="pageTitle">Tổng quan</h2>
                     <p class="text-slate-500 dark:text-slate-400 mt-1">Chào mừng bạn quay trở lại với NeonAquatics</p>
                 </div>
-                <div class="flex gap-4">
-                    <button
-                        class="bg-slate-100 dark:bg-primary/5 p-2 rounded-lg border border-slate-200 dark:border-primary-accent/20 text-slate-600 dark:text-slate-300">
+                <div class="flex items-center gap-2 md:gap-3">
+                    <button type="button" onclick="toggleDesktopSidebar()" aria-label="Thu gọn menu"
+                        class="hidden md:inline-flex bg-slate-100 dark:bg-primary/5 p-2 rounded-lg border border-slate-200 dark:border-primary-accent/20 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-primary/10 transition-colors">
+                        <span id="desktopSidebarToggleIcon"
+                            class="material-symbols-outlined text-[20px]">left_panel_open</span>
+                    </button>
+                    <button onclick="focusGlobalSearch()" title="Tìm kiếm nhanh"
+                        class="bg-slate-100 dark:bg-primary/5 p-2 rounded-lg border border-slate-200 dark:border-primary-accent/20 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-primary/10 transition-colors">
                         <span class="material-symbols-outlined">search</span>
                     </button>
-                    <button
-                        class="bg-slate-100 dark:bg-primary/5 p-2 rounded-lg border border-slate-200 dark:border-primary-accent/20 text-slate-600 dark:text-slate-300 relative">
+                    <button onclick="showNotificationHint()" title="Thông báo"
+                        class="bg-slate-100 dark:bg-primary/5 p-2 rounded-lg border border-slate-200 dark:border-primary-accent/20 text-slate-600 dark:text-slate-300 relative hover:bg-slate-200 dark:hover:bg-primary/10 transition-colors">
                         <span class="material-symbols-outlined">notifications</span>
                         <span
-                            class="absolute top-2 right-2 size-2 bg-primary rounded-full ring-2 ring-background-dark"></span>
-                    </button>
-                    <button
-                        class="bg-primary hover:bg-primary/90 text-background-dark font-bold px-4 py-2 rounded-lg flex items-center gap-2 transition-all shadow-[0_4px_15px_rgba(31,231,249,0.3)]">
-                        <span class="material-symbols-outlined text-xl">add</span>
-                        <span>Tạo báo giá</span>
+                            class="absolute top-2 right-2 size-2 bg-primary-accent rounded-full ring-2 ring-background-dark"></span>
                     </button>
                 </div>
             </header>
@@ -130,8 +134,7 @@
                             class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full -mr-8 -mt-8 transition-all group-hover:bg-primary/10">
                         </div>
                         <p class="text-slate-500 dark:text-slate-400 text-sm font-medium uppercase tracking-wider mb-2">
-                            Danh
-                            mục</p>
+                            Dòng hàng</p>
                         <div class="flex items-end justify-between">
                             <h3 class="text-4xl font-bold" id="totalCategories">0</h3>
                             <span class="text-emerald-500 text-sm font-bold flex items-center gap-1 mb-1 hidden">
@@ -196,8 +199,7 @@
                                     <span class="material-symbols-outlined text-primary-accent">warning</span>
                                     Sắp hết hàng
                                 </h4>
-                                <a class="text-xs text-primary-accent font-bold uppercase tracking-widest hover:underline"
-                                    href="#">Xem tất cả</a>
+                                <a class="text-xs text-primary-accent font-bold uppercase tracking-widest hover:underline" href="#" onclick="event.preventDefault(); switchTab('products')">Xem tất cả</a>
                             </div>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left">
@@ -224,8 +226,7 @@
                                     <span class="material-symbols-outlined text-primary-accent">history</span>
                                     Báo giá gần đây
                                 </h4>
-                                <a class="text-xs text-primary-accent font-bold uppercase tracking-widest hover:underline"
-                                    href="#">Xem tất cả</a>
+                                <a class="text-xs text-primary-accent font-bold uppercase tracking-widest hover:underline" href="#" onclick="event.preventDefault(); switchTab('quotes')">Xem tất cả</a>
                             </div>
                             <div class="p-0">
                                 <div class="divide-y divide-slate-200 dark:divide-primary/10 min-w-[300px]"
@@ -258,7 +259,7 @@
                     <div class="relative w-full md:w-96">
                         <span
                             class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-                        <input type="text" id="searchCategory" placeholder="Tìm kiếm danh mục..."
+                        <input type="text" id="searchCategory" placeholder="Tìm kiếm dòng hàng..."
                             class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50 transition-all text-slate-800 dark:text-slate-200"
                             oninput="renderCategories()">
                     </div>
@@ -266,7 +267,7 @@
                         class="w-full md:w-auto bg-primary text-white font-bold px-4 py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all hover:bg-primary/90 shadow-[0_4px_15px_rgba(31,231,249,0.2)]"
                         onclick="openCategoryModal()">
                         <span class="material-symbols-outlined text-xl">add</span>
-                        Thêm danh mục
+                        Thêm dòng hàng
                     </button>
                 </div>
                 <!-- Recovered table code goes here -->
@@ -277,12 +278,11 @@
                             <thead
                                 class="bg-slate-200/50 dark:bg-primary/10 text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider">
                                 <tr>
-                                    <th class="px-4 lg:px-6 py-3 lg:py-4 font-semibold w-16 text-center">STT</th>
-                                    <th class="px-4 lg:px-6 py-3 lg:py-4 font-semibold">Tên danh mục</th>
-                                    <th class="px-4 lg:px-6 py-3 lg:py-4 font-semibold">Mô tả</th>
-                                    <th class="px-4 lg:px-6 py-3 lg:py-4 font-semibold text-center w-32">Số sản phẩm
-                                    </th>
-                                    <th class="px-4 lg:px-6 py-3 lg:py-4 font-semibold text-right w-24">Thao tác</th>
+                                    <th class="px-3 py-3 font-semibold w-12 text-center">STT</th>
+                                    <th class="px-4 py-3 font-semibold">Tên dòng hàng</th>
+                                    <th class="px-4 py-3 font-semibold">Mô tả</th>
+                                    <th class="px-4 py-3 font-semibold text-center w-32">Số sản phẩm</th>
+                                    <th class="px-4 py-3 font-semibold text-right w-24">Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-200 dark:divide-primary/10" id="categoriesTable">
@@ -306,10 +306,10 @@
                         <div class="relative w-full sm:w-48">
                             <span
                                 class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">filter_list</span>
-                            <select id="filterCategory" title="Lọc danh mục"
+                            <select id="filterCategory" title="Lọc dòng hàng"
                                 class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50 transition-all appearance-none text-slate-800 dark:text-slate-200 block"
                                 onchange="renderProducts()">
-                                <option value="">Tất cả danh mục</option>
+                                <option value="">Tất cả dòng hàng</option>
                             </select>
                             <span
                                 class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
@@ -329,14 +329,40 @@
                             <thead
                                 class="bg-slate-200/50 dark:bg-primary/10 text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider">
                                 <tr>
-                                    <th class="px-4 lg:px-6 py-3 lg:py-4 font-semibold w-16 text-center">STT</th>
-                                    <th class="px-4 lg:px-6 py-3 lg:py-4 font-semibold w-24 text-center">Hình</th>
-                                    <th class="px-4 lg:px-6 py-3 lg:py-4 font-semibold">Tên sản phẩm</th>
-                                    <th class="px-4 lg:px-6 py-3 lg:py-4 font-semibold">Danh mục</th>
-                                    <th class="px-4 lg:px-6 py-3 lg:py-4 font-semibold text-right">Giá</th>
-                                    <th class="px-4 lg:px-6 py-3 lg:py-4 font-semibold text-center w-24">Tồn kho</th>
-                                    <th class="px-4 lg:px-6 py-3 lg:py-4 font-semibold text-center">Trạng thái</th>
-                                    <th class="px-4 lg:px-6 py-3 lg:py-4 font-semibold text-right w-24">Thao tác</th>
+                                    <th
+                                        class="px-3 py-3 font-semibold w-12 text-center border-r border-slate-200 dark:border-primary-accent/10">
+                                        STT</th>
+                                    <th
+                                        class="px-4 py-3 font-semibold border-r border-slate-200 dark:border-primary-accent/10">
+                                        Dòng hàng</th>
+                                    <th
+                                        class="px-4 py-3 font-semibold border-r border-slate-200 dark:border-primary-accent/10">
+                                        Tên sản phẩm / Model cụ thể</th>
+                                    <th
+                                        class="px-4 py-3 font-semibold text-center border-r border-slate-200 dark:border-primary-accent/10">
+                                        Phân khúc</th>
+                                    <th
+                                        class="px-4 py-3 font-semibold text-right border-r border-slate-200 dark:border-primary-accent/10">
+                                        Giá sỉ</th>
+                                    <th
+                                        class="px-4 py-3 font-semibold text-center border-r border-slate-200 dark:border-primary-accent/10">
+                                        Nguồn hàng</th>
+                                    <th
+                                        class="px-4 py-3 font-semibold text-center border-r border-slate-200 dark:border-primary-accent/10">
+                                        Sàn chủ lực</th>
+                                    <th
+                                        class="px-4 py-3 font-semibold text-center border-r border-slate-200 dark:border-primary-accent/10">
+                                        Nhập</th>
+                                    <th
+                                        class="px-4 py-3 font-semibold text-center border-r border-slate-200 dark:border-primary-accent/10">
+                                        Số lượng</th>
+                                    <th
+                                        class="px-4 py-3 font-semibold text-right border-r border-slate-200 dark:border-primary-accent/10">
+                                        Thành tiền</th>
+                                    <th
+                                        class="px-4 py-3 font-semibold border-r border-slate-200 dark:border-primary-accent/10">
+                                        Ưu điểm (USP)</th>
+                                    <th class="px-4 py-3 font-semibold text-right w-24">Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-200 dark:divide-primary/10" id="productsTable">
@@ -439,7 +465,7 @@
         <div
             class="bg-white dark:bg-background-dark rounded-2xl border border-slate-200 dark:border-primary-accent/20 w-full max-w-md shadow-2xl">
             <div class="p-6 border-b border-slate-200 dark:border-primary-accent/10 flex justify-between items-center">
-                <h3 class="text-lg font-bold" id="categoryModalTitle">Thêm danh mục</h3>
+                <h3 class="text-lg font-bold" id="categoryModalTitle">Thêm dòng hàng</h3>
                 <button onclick="closeCategoryModal()"
                     class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><span
                         class="material-symbols-outlined">close</span></button>
@@ -447,7 +473,7 @@
             <div class="p-6 space-y-4">
                 <input type="hidden" id="categoryId">
                 <div>
-                    <label class="block text-sm font-medium mb-1">Tên danh mục</label>
+                    <label class="block text-sm font-medium mb-1">Tên dòng hàng</label>
                     <input type="text" id="categoryName"
                         class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50">
                 </div>
@@ -466,11 +492,11 @@
         </div>
     </div>
 
-    <!-- Product Modal -->
+    <!-- Product Modal (Merged with Category) -->
     <div id="productModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
         style="display:none;">
         <div
-            class="bg-white dark:bg-background-dark rounded-2xl border border-slate-200 dark:border-primary-accent/20 w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
+            class="bg-white dark:bg-background-dark rounded-2xl border border-slate-200 dark:border-primary-accent/20 w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
             <div class="p-6 border-b border-slate-200 dark:border-primary-accent/10 flex justify-between items-center">
                 <h3 class="text-lg font-bold" id="productModalTitle">Thêm sản phẩm</h3>
                 <button onclick="closeProductModal()"
@@ -479,24 +505,50 @@
             </div>
             <div class="p-6 space-y-4">
                 <input type="hidden" id="productId">
-                <div>
-                    <label class="block text-sm font-medium mb-1">Tên sản phẩm</label>
-                    <input type="text" id="productName"
-                        class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Mã sản phẩm</label>
-                    <input type="text" id="productCode"
-                        class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Danh mục</label>
-                    <select id="productCategory"
-                        class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50"></select>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
+
+                <!-- Row 1: Dòng hàng + Tên sản phẩm -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium mb-1">Giá bán</label>
+                        <label class="block text-sm font-medium mb-1">Dòng hàng <span
+                                class="text-red-400">*</span></label>
+                        <select id="productCategory" onchange="onCategorySelectChange()"
+                            class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50"></select>
+                        <div id="newCategoryGroup" class="mt-2" style="display:none;">
+                            <input type="text" id="newCategoryName" placeholder="Nhập tên dòng hàng mới..."
+                                class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Tên sản phẩm / Model cụ thể <span
+                                class="text-red-400">*</span></label>
+                        <input type="text" id="productName"
+                            class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50">
+                    </div>
+                </div>
+
+                <!-- Row 2: Mã SP + Phân khúc -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Mã sản phẩm</label>
+                        <input type="text" id="productCode"
+                            class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Phân khúc</label>
+                        <select id="productPhanKhuc"
+                            class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50">
+                            <option value="">-- Chọn --</option>
+                            <option value="Rẻ">Rẻ</option>
+                            <option value="Trung">Trung</option>
+                            <option value="Cao">Cao</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Row 3: Giá sỉ + Giá vốn -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Giá sỉ</label>
                         <input type="text" id="productPrice" oninput="formatPriceInput(this)"
                             class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50">
                     </div>
@@ -506,18 +558,55 @@
                             class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50">
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
+
+                <!-- Row 4: Nguồn hàng + Sàn chủ lực -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium mb-1">Đơn vị</label>
-                        <input type="text" id="productUnit"
+                        <label class="block text-sm font-medium mb-1">Nguồn hàng</label>
+                        <input type="text" id="productNguonHang" placeholder="VD: Cao Quý, SNM..."
                             class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1">Tồn kho</label>
+                        <label class="block text-sm font-medium mb-1">Sàn chủ lực</label>
+                        <select id="productSanChuLuc"
+                            class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50">
+                            <option value="">-- Chọn --</option>
+                            <option value="Shopee">Shopee</option>
+                            <option value="Fanpage">Fanpage</option>
+                            <option value="Lazada">Lazada</option>
+                            <option value="TikTok">TikTok</option>
+                            <option value="Khác">Khác</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Row 5: Nhập + Số lượng + Đơn vị -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="flex items-center gap-3 pt-6">
+                        <input type="checkbox" id="productNhap"
+                            class="rounded border-slate-300 text-primary-accent focus:ring-primary-accent h-5 w-5">
+                        <label for="productNhap" class="text-sm font-medium cursor-pointer">Nhập hàng</label>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Số lượng</label>
                         <input type="number" id="productStock"
                             class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50">
                     </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Đơn vị</label>
+                        <input type="text" id="productUnit" placeholder="VD: Cái, Con..."
+                            class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50">
+                    </div>
                 </div>
+
+                <!-- Row 6: USP -->
+                <div>
+                    <label class="block text-sm font-medium mb-1">Ưu điểm (USP)</label>
+                    <textarea id="productUSP" rows="2" placeholder="Điểm nổi bật, ưu điểm sản phẩm..."
+                        class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50"></textarea>
+                </div>
+
+                <!-- Row 7: Hình ảnh -->
                 <div>
                     <label class="block text-sm font-medium mb-1">Hình ảnh</label>
                     <div class="flex items-center gap-4">
@@ -533,9 +622,11 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Row 8: Mô tả -->
                 <div>
                     <label class="block text-sm font-medium mb-1">Mô tả</label>
-                    <textarea id="productDescription" rows="3"
+                    <textarea id="productDescription" rows="2"
                         class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50"></textarea>
                 </div>
             </div>
@@ -543,7 +634,7 @@
                 <button onclick="closeProductModal()"
                     class="px-4 py-2 rounded-lg border border-slate-200 dark:border-primary-accent/20 text-sm font-medium">Hủy</button>
                 <button onclick="saveProduct()"
-                    class="px-4 py-2 rounded-lg bg-primary text-white text-sm font-bold">Lưu</button>
+                    class="px-4 py-2 rounded-lg bg-primary-accent text-white text-sm font-bold">Lưu</button>
             </div>
         </div>
     </div>
@@ -683,3 +774,7 @@
 </body>
 
 </html>
+
+
+
+

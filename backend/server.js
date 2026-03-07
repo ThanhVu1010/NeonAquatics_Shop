@@ -42,7 +42,9 @@ app.use((req, res, next) => {
 // Static files
 app.use(express.static(path.join(__dirname, '../frontend/storefront'))); // Public storefront
 app.use('/admin', express.static(path.join(__dirname, '../frontend/admin'))); // Admin panel
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
+const isVercel = process.env.VERCEL === '1';
+app.use('/uploads', express.static(isVercel ? '/tmp/uploads' : path.join(__dirname, '../uploads')));
 
 // Routes
 app.use('/api/auth', authRoutes);

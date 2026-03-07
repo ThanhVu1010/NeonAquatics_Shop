@@ -115,6 +115,23 @@ async function initDatabase() {
         // Ignored if column already exists
     }
 
+    // Add new product fields: phan_khuc, nguon_hang, san_chu_luc, nhap, usp
+    const newProductCols = [
+        { name: 'phan_khuc', type: 'TEXT DEFAULT ""' },
+        { name: 'nguon_hang', type: 'TEXT DEFAULT ""' },
+        { name: 'san_chu_luc', type: 'TEXT DEFAULT ""' },
+        { name: 'nhap', type: 'INTEGER DEFAULT 0' },
+        { name: 'usp', type: 'TEXT DEFAULT ""' }
+    ];
+    for (const col of newProductCols) {
+        try {
+            await db.execute(`ALTER TABLE products ADD COLUMN ${col.name} ${col.type}`);
+            console.log(`✅ Added ${col.name} column to products`);
+        } catch (e) {
+            // Ignored if column already exists
+        }
+    }
+
     // Ensure default admin user exists
     const adminCheck = await db.execute("SELECT * FROM users WHERE username = 'admin'");
     if (adminCheck.rows.length === 0) {
