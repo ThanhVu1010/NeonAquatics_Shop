@@ -1515,3 +1515,27 @@ body {
         margin-left: 0 !important;
     }
 }
+
+/* Ensure form values stay readable in dark theme and native select menus */
+#adminMain input:not([type="checkbox"]):not([type="file"]):not([type="hidden"]),
+#adminMain textarea,
+#adminMain select {
+    color: #1e293b;
+}
+
+html.dark #adminMain input:not([type="checkbox"]):not([type="file"]):not([type="hidden"]),
+html.dark #adminMain textarea,
+html.dark #adminMain select {
+    color: #e2e8f0;
+}
+
+html.dark #adminMain input::placeholder,
+html.dark #adminMain textarea::placeholder {
+    color: #94a3b8;
+}
+
+#adminMain select option,
+html.dark #adminMain select option {
+    color: #0f172a;
+    background-color: #ffffff;
+}

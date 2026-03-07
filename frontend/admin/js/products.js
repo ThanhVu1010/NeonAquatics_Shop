@@ -8,6 +8,8 @@ function toSafeInteger(value) {
     return Math.max(0, Math.floor(num));
 }
 
+let isSavingProduct = false;
+
 async function loadProducts() {
     const result = await api('/api/products');
     if (result.success) {
@@ -187,6 +189,8 @@ function onCategorySelectChange() {
 }
 
 async function saveProduct() {
+    if (isSavingProduct) return;
+
     const codeInput = document.getElementById('productCode');
     const name = document.getElementById('productName').value.trim();
     let categoryId = document.getElementById('productCategory').value;
@@ -204,65 +208,89 @@ async function saveProduct() {
         if (duplicated) return showToast('Ma san pham da ton tai!', 'error');
     }
 
-    if (categoryId === '__new__') {
-        const newCatName = document.getElementById('newCategoryName').value.trim();
-        if (!newCatName) return showToast('Vui long nhap ten dong hang moi!', 'error');
-        const newCatId = await createCategoryInline(newCatName);
-        if (!newCatId) return showToast('Khong the tao dong hang moi!', 'error');
-        categoryId = newCatId;
-        showToast(`Da tao dong hang "${newCatName}"`);
+    isSavingProduct = true;
+    const saveBtn = document.getElementById('saveProductBtn');
+    if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.classList.add('opacity-60', 'cursor-not-allowed');
     }
 
-    if (!categoryId) return showToast('Vui long chon dong hang!', 'error');
-
-    const fileInput = document.getElementById('productImage');
-    let finalImageUrl = document.getElementById('productImageUrl').value;
-    if (fileInput.files.length > 0) {
-        const formData = new FormData();
-        formData.append('image', fileInput.files[0]);
-        try {
-            const token = localStorage.getItem('bgm_token');
-            const res = await fetch('/api/upload', {
-                method: 'POST',
-                headers: token ? { Authorization: `Bearer ${token}` } : {},
-                body: formData
-            });
-            const data = await res.json();
-            if (!data.success) return showToast(data.message || 'Loi tai anh', 'error');
-            finalImageUrl = data.url;
-        } catch (err) {
-            return showToast('Loi mang khi tai anh', 'error');
+    try {
+        if (categoryId === '__new__') {
+            const newCatName = document.getElementById('newCategoryName').value.trim();
+            if (!newCatName) return showToast('Vui long nhap ten dong hang moi!', 'error');
+            const newCatId = await createCategoryInline(newCatName);
+            if (!newCatId) return showToast('Khong the tao dong hang moi!', 'error');
+            categoryId = newCatId;
+            showToast(`Da tao dong hang "${newCatName}"`);
         }
-    }
 
-    codeInput.value = code;
-    const productData = {
-        code,
-        name,
-        categoryId,
-        unit: document.getElementById('productUnit').value.trim(),
-        price,
-        costPrice,
-        stock: toSafeInteger(stockRaw),
-        description: document.getElementById('productDescription').value.trim(),
-        image_url: finalImageUrl,
-        phanKhuc: document.getElementById('productPhanKhuc').value.trim(),
-        nguonHang: document.getElementById('productNguonHang').value.trim(),
-        sanChuLuc: document.getElementById('productSanChuLuc').value.trim(),
-        nhap: document.getElementById('productNhap').checked ? 1 : 0,
-        usp: document.getElementById('productUSP').value.trim()
-    };
+        if (!categoryId) return showToast('Vui long chon dong hang!', 'error');
 
-    const result = editId
-        ? await api(`/api/products/${editId}`, { method: 'PUT', body: JSON.stringify(productData) })
-        : await api('/api/products', { method: 'POST', body: JSON.stringify(productData) });
+        const duplicatedByNameAndCategory = products.some(p =>
+            p.id !== editId &&
+            (p.name || '').trim().toLowerCase() === name.toLowerCase() &&
+            p.categoryId === categoryId
+        );
+        if (duplicatedByNameAndCategory) {
+            return showToast('San pham nay da ton tai trong dong hang da chon!', 'error');
+        }
 
-    if (result.success) {
-        showToast(editId ? 'Da cap nhat san pham!' : 'Da them san pham moi!');
-        closeProductModal();
-        renderProducts();
-    } else {
-        showToast(result.message || 'Co loi xay ra!', 'error');
+        const fileInput = document.getElementById('productImage');
+        let finalImageUrl = document.getElementById('productImageUrl').value;
+        if (fileInput.files.length > 0) {
+            const formData = new FormData();
+            formData.append('image', fileInput.files[0]);
+            try {
+                const token = localStorage.getItem('bgm_token');
+                const res = await fetch('/api/upload', {
+                    method: 'POST',
+                    headers: token ? { Authorization: `Bearer ${token}` } : {},
+                    body: formData
+                });
+                const data = await res.json();
+                if (!data.success) return showToast(data.message || 'Loi tai anh', 'error');
+                finalImageUrl = data.url;
+            } catch (err) {
+                return showToast('Loi mang khi tai anh', 'error');
+            }
+        }
+
+        codeInput.value = code;
+        const productData = {
+            code,
+            name,
+            categoryId,
+            unit: document.getElementById('productUnit').value.trim(),
+            price,
+            costPrice,
+            stock: toSafeInteger(stockRaw),
+            description: document.getElementById('productDescription').value.trim(),
+            image_url: finalImageUrl,
+            phanKhuc: document.getElementById('productPhanKhuc').value.trim(),
+            nguonHang: document.getElementById('productNguonHang').value.trim(),
+            sanChuLuc: document.getElementById('productSanChuLuc').value.trim(),
+            nhap: document.getElementById('productNhap').checked ? 1 : 0,
+            usp: document.getElementById('productUSP').value.trim()
+        };
+
+        const result = editId
+            ? await api(`/api/products/${editId}`, { method: 'PUT', body: JSON.stringify(productData) })
+            : await api('/api/products', { method: 'POST', body: JSON.stringify(productData) });
+
+        if (result.success) {
+            showToast(editId ? 'Da cap nhat san pham!' : 'Da them san pham moi!');
+            closeProductModal();
+            await renderProducts();
+        } else {
+            showToast(result.message || 'Co loi xay ra!', 'error');
+        }
+    } finally {
+        isSavingProduct = false;
+        if (saveBtn) {
+            saveBtn.disabled = false;
+            saveBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+        }
     }
 }
 
