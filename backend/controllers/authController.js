@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const { db } = require('../config/db');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'mat-khau-admin-mac-dinh-thuy-sinh-bao-gia';
-const AUTH_SESSION_ID = Date.now().toString();
 
 exports.login = async (req, res) => {
     try {
@@ -28,7 +27,7 @@ exports.login = async (req, res) => {
         }
 
         const token = jwt.sign(
-            { id: user.id, username: user.username, role: user.role, sid: AUTH_SESSION_ID },
+            { id: user.id, username: user.username, role: user.role },
             JWT_SECRET,
             { expiresIn: '7d' }
         );
@@ -64,10 +63,6 @@ exports.authenticateToken = (req, res, next) => {
         if (err) {
             return res.status(401).json({ success: false, message: 'Phien dang nhap het han hoac khong hop le.' });
         }
-        if (user.sid !== AUTH_SESSION_ID) {
-            return res.status(401).json({ success: false, message: 'Phien dang nhap da het hieu luc sau khi khoi dong lai he thong.' });
-        }
-
         req.user = user;
         next();
     });
