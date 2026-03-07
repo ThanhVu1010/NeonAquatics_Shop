@@ -74,6 +74,22 @@ async function isCodeExists(code, excludeId = null) {
     return result.rows.length > 0;
 }
 
+async function isNameExistsInCategory(name, categoryId, excludeId = null) {
+    const normalizedName = normalizeText(name);
+    const normalizedCategoryId = normalizeText(categoryId);
+    if (!normalizedName || !normalizedCategoryId) return false;
+
+    const result = await db.execute({
+        sql: excludeId
+            ? 'SELECT id FROM products WHERE LOWER(TRIM(name)) = LOWER(TRIM(?)) AND category_id = ? AND id <> ? LIMIT 1'
+            : 'SELECT id FROM products WHERE LOWER(TRIM(name)) = LOWER(TRIM(?)) AND category_id = ? LIMIT 1',
+        args: excludeId
+            ? [normalizedName, normalizedCategoryId, excludeId]
+            : [normalizedName, normalizedCategoryId]
+    });
+    return result.rows.length > 0;
+}
+
 exports.getProducts = async (req, res) => {
     try {
         const result = await db.execute('SELECT * FROM products ORDER BY created_at DESC');
@@ -91,6 +107,9 @@ exports.createProduct = async (req, res) => {
         const data = parsed.value;
         if (await isCodeExists(data.code)) {
             return res.json({ success: false, message: 'Ma san pham da ton tai!' });
+        }
+        if (await isNameExistsInCategory(data.name, data.categoryId)) {
+            return res.json({ success: false, message: 'San pham nay da ton tai trong dong hang da chon!' });
         }
 
         const id = generateId();
@@ -130,6 +149,9 @@ exports.updateProduct = async (req, res) => {
         const data = parsed.value;
         if (await isCodeExists(data.code, req.params.id)) {
             return res.json({ success: false, message: 'Ma san pham da duoc su dung boi san pham khac!' });
+        }
+        if (await isNameExistsInCategory(data.name, data.categoryId, req.params.id)) {
+            return res.json({ success: false, message: 'San pham nay da ton tai trong dong hang da chon!' });
         }
 
         await db.execute({
