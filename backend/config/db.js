@@ -90,6 +90,13 @@ async function initDatabase() {
         value TEXT
     )`);
 
+    await db.execute(`CREATE TABLE IF NOT EXISTS product_images (
+        id TEXT PRIMARY KEY,
+        mime_type TEXT NOT NULL,
+        data BLOB NOT NULL,
+        created_at TEXT
+    )`);
+
     // Add stock column to products if it doesn't exist
     try {
         await db.execute('ALTER TABLE products ADD COLUMN stock INTEGER DEFAULT 0');
