@@ -39,13 +39,17 @@ async function populateCategoryFilters() {
     await loadCategories();
     const filterSelect = document.getElementById('filterCategory');
     const productSelect = document.getElementById('productCategory');
-    const options = categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    const options = categories
+        .map(c => `<option value="${c.id}" style="color:#0f172a;background:#ffffff;">${c.name}</option>`)
+        .join('');
 
     if (filterSelect) {
-        filterSelect.innerHTML = '<option value="">Tat ca dong hang</option>' + options;
+        filterSelect.innerHTML = '<option value="" style="color:#0f172a;background:#ffffff;">Tat ca dong hang</option>' + options;
     }
     if (productSelect) {
-        productSelect.innerHTML = '<option value="">-- Chon dong hang --</option>' + options + '<option value="__new__">+ Tao dong hang moi...</option>';
+        productSelect.innerHTML = '<option value="" style="color:#0f172a;background:#ffffff;">-- Chon dong hang --</option>'
+            + options
+            + '<option value="__new__" style="color:#0f172a;background:#ffffff;">+ Tao dong hang moi...</option>';
     }
 }
 
@@ -77,7 +81,10 @@ async function renderProducts() {
     if (emptyState) emptyState.style.display = 'none';
     tbody.innerHTML = filtered.map((p, index) => {
         const cat = categories.find(c => c.id === p.categoryId);
-        const thanhTien = (p.price || 0) * (p.stock || 0);
+        const giaNhap = Number(p.costPrice || 0);
+        const giaBan = Number(p.price || 0);
+        const loiNhuan = giaBan - giaNhap;
+        const laiSauPhi = loiNhuan * 0.5;
         return `
             <tr class="border-b border-slate-200 dark:border-primary/10 hover:bg-slate-50 dark:hover:bg-primary/5 transition-colors">
                 <td class="px-3 py-3 text-center text-sm border-r border-slate-100 dark:border-primary-accent/10">${index + 1}</td>
@@ -89,17 +96,19 @@ async function renderProducts() {
                 <td class="px-3 py-3 text-center text-sm border-r border-slate-100 dark:border-primary-accent/10">
                     ${p.phanKhuc ? `<span class="px-2 py-0.5 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded text-xs font-medium">${p.phanKhuc}</span>` : '<span class="text-slate-300">-</span>'}
                 </td>
-                <td class="px-3 py-3 text-right text-sm border-r border-slate-100 dark:border-primary-accent/10 font-medium">${p.price ? formatCurrency(p.price) : '-'}</td>
+                <td class="px-3 py-3 text-right text-sm border-r border-slate-100 dark:border-primary-accent/10 font-medium">${giaNhap ? formatCurrency(giaNhap) : '-'}</td>
                 <td class="px-3 py-3 text-center text-sm border-r border-slate-100 dark:border-primary-accent/10">${p.nguonHang || '-'}</td>
                 <td class="px-3 py-3 text-center text-sm border-r border-slate-100 dark:border-primary-accent/10">${p.sanChuLuc || '-'}</td>
                 <td class="px-3 py-3 text-center border-r border-slate-100 dark:border-primary-accent/10">
                     ${p.nhap ? '<span class="material-symbols-outlined text-emerald-500 text-lg">check_box</span>' : '<span class="material-symbols-outlined text-slate-300 text-lg">check_box_outline_blank</span>'}
                 </td>
-                <td class="px-3 py-3 text-center text-sm font-medium border-r border-slate-100 dark:border-primary-accent/10">${p.stock || 0}</td>
+                <td class="px-3 py-3 text-right text-sm font-medium border-r border-slate-100 dark:border-primary-accent/10">${giaBan ? formatCurrency(giaBan) : '-'}</td>
                 <td class="px-3 py-3 text-right border-r border-slate-100 dark:border-primary-accent/10">
-                    <div class="font-bold text-sm ${thanhTien > 0 ? 'text-emerald-600' : 'text-slate-400'}">${thanhTien > 0 ? formatCurrency(thanhTien) : '0'}</div>
+                    <div class="font-bold text-sm ${loiNhuan >= 0 ? 'text-emerald-600' : 'text-red-500'}">${formatCurrency(loiNhuan)}</div>
                 </td>
-                <td class="px-3 py-3 text-sm border-r border-slate-100 dark:border-primary-accent/10">${p.usp || '-'}</td>
+                <td class="px-3 py-3 text-right text-sm border-r border-slate-100 dark:border-primary-accent/10">
+                    <div class="font-bold ${laiSauPhi >= 0 ? 'text-emerald-600' : 'text-red-500'}">${formatCurrency(laiSauPhi)}</div>
+                </td>
                 <td class="px-3 py-3 text-right">
                     <div class="flex justify-end gap-1.5">
                         <button class="text-slate-400 hover:text-primary-accent transition-colors cursor-pointer p-1" onclick="editProduct('${p.id}')" title="Sua">
@@ -134,8 +143,8 @@ function openProductModal(id) {
             document.getElementById('productName').value = p.name;
             document.getElementById('productCategory').value = p.categoryId || '';
             document.getElementById('productUnit').value = p.unit || '';
-            document.getElementById('productPrice').value = p.price ? new Intl.NumberFormat('vi-VN').format(p.price) : '';
-            document.getElementById('productCostPrice').value = p.costPrice ? new Intl.NumberFormat('vi-VN').format(p.costPrice) : '';
+            document.getElementById('productPrice').value = p.costPrice ? new Intl.NumberFormat('vi-VN').format(p.costPrice) : '';
+            document.getElementById('productCostPrice').value = p.price ? new Intl.NumberFormat('vi-VN').format(p.price) : '';
             document.getElementById('productStock').value = p.stock || 0;
             document.getElementById('productDescription').value = p.description || '';
             document.getElementById('productImageUrl').value = p.image_url || '';
@@ -194,8 +203,8 @@ async function saveProduct() {
     const codeInput = document.getElementById('productCode');
     const name = document.getElementById('productName').value.trim();
     let categoryId = document.getElementById('productCategory').value;
-    const price = parseCurrency(document.getElementById('productPrice').value);
-    const costPrice = parseCurrency(document.getElementById('productCostPrice').value);
+    const giaNhap = parseCurrency(document.getElementById('productPrice').value);
+    const giaBan = parseCurrency(document.getElementById('productCostPrice').value);
     const stockRaw = Number(document.getElementById('productStock').value || 0);
     const editId = document.getElementById('productId').value;
     const code = normalizeCode(codeInput.value);
@@ -262,8 +271,8 @@ async function saveProduct() {
             name,
             categoryId,
             unit: document.getElementById('productUnit').value.trim(),
-            price,
-            costPrice,
+            price: giaBan,
+            costPrice: giaNhap,
             stock: toSafeInteger(stockRaw),
             description: document.getElementById('productDescription').value.trim(),
             image_url: finalImageUrl,

@@ -1535,7 +1535,16 @@ html.dark #adminMain textarea::placeholder {
 }
 
 #adminMain select option,
-html.dark #adminMain select option {
-    color: #0f172a;
-    background-color: #ffffff;
+#adminMain select optgroup,
+html.dark #adminMain select option,
+html.dark #adminMain select optgroup {
+    color: #0f172a !important;
+    background-color: #ffffff !important;
+    text-shadow: 0 0 0 #0f172a;
+}
+
+#adminMain select option:checked,
+html.dark #adminMain select option:checked {
+    color: #0f172a !important;
+    background-color: #dbeafe !important;
 }

@@ -343,7 +343,7 @@
                                         Phân khúc</th>
                                     <th
                                         class="px-4 py-3 font-semibold text-right border-r border-slate-200 dark:border-primary-accent/10">
-                                        Giá sỉ</th>
+                                        Giá nhập</th>
                                     <th
                                         class="px-4 py-3 font-semibold text-center border-r border-slate-200 dark:border-primary-accent/10">
                                         Nguồn hàng</th>
@@ -352,16 +352,16 @@
                                         Sàn chủ lực</th>
                                     <th
                                         class="px-4 py-3 font-semibold text-center border-r border-slate-200 dark:border-primary-accent/10">
-                                        Nhập</th>
-                                    <th
-                                        class="px-4 py-3 font-semibold text-center border-r border-slate-200 dark:border-primary-accent/10">
-                                        Số lượng</th>
+                                        Đã nhập</th>
                                     <th
                                         class="px-4 py-3 font-semibold text-right border-r border-slate-200 dark:border-primary-accent/10">
-                                        Thành tiền</th>
+                                        Giá bán</th>
                                     <th
-                                        class="px-4 py-3 font-semibold border-r border-slate-200 dark:border-primary-accent/10">
-                                        Ưu điểm (USP)</th>
+                                        class="px-4 py-3 font-semibold text-right border-r border-slate-200 dark:border-primary-accent/10">
+                                        Lợi nhuận</th>
+                                    <th
+                                        class="px-4 py-3 font-semibold text-right border-r border-slate-200 dark:border-primary-accent/10">
+                                        Lãi sau phí</th>
                                     <th class="px-4 py-3 font-semibold text-right w-24">Thao tác</th>
                                 </tr>
                             </thead>
@@ -537,23 +537,23 @@
                         <label class="block text-sm font-medium mb-1">Phân khúc</label>
                         <select id="productPhanKhuc"
                             class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50">
-                            <option value="">-- Chọn --</option>
-                            <option value="Rẻ">Rẻ</option>
-                            <option value="Trung">Trung</option>
-                            <option value="Cao">Cao</option>
+                            <option value="" style="color:#0f172a;background:#ffffff;">-- Chọn --</option>
+                            <option value="Rẻ" style="color:#0f172a;background:#ffffff;">Rẻ</option>
+                            <option value="Trung" style="color:#0f172a;background:#ffffff;">Trung</option>
+                            <option value="Cao" style="color:#0f172a;background:#ffffff;">Cao</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Row 3: Giá sỉ + Giá vốn -->
+                <!-- Row 3: Giá nhập + Giá bán -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium mb-1">Giá sỉ</label>
+                        <label class="block text-sm font-medium mb-1">Giá nhập</label>
                         <input type="text" id="productPrice" oninput="formatPriceInput(this)"
                             class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1">Giá vốn</label>
+                        <label class="block text-sm font-medium mb-1">Giá bán</label>
                         <input type="text" id="productCostPrice" oninput="formatPriceInput(this)"
                             class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50">
                     </div>
@@ -570,12 +570,12 @@
                         <label class="block text-sm font-medium mb-1">Sàn chủ lực</label>
                         <select id="productSanChuLuc"
                             class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50">
-                            <option value="">-- Chọn --</option>
-                            <option value="Shopee">Shopee</option>
-                            <option value="Fanpage">Fanpage</option>
-                            <option value="Lazada">Lazada</option>
-                            <option value="TikTok">TikTok</option>
-                            <option value="Khác">Khác</option>
+                            <option value="" style="color:#0f172a;background:#ffffff;">-- Chọn --</option>
+                            <option value="Shopee" style="color:#0f172a;background:#ffffff;">Shopee</option>
+                            <option value="Fanpage" style="color:#0f172a;background:#ffffff;">Fanpage</option>
+                            <option value="Lazada" style="color:#0f172a;background:#ffffff;">Lazada</option>
+                            <option value="TikTok" style="color:#0f172a;background:#ffffff;">TikTok</option>
+                            <option value="Khác" style="color:#0f172a;background:#ffffff;">Khác</option>
                         </select>
                     </div>
                 </div>
@@ -728,8 +728,8 @@
                     <label class="block text-sm font-medium mb-1">Loại khách hàng</label>
                     <select id="customerType"
                         class="w-full bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/20 rounded-lg py-2.5 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary-accent/50">
-                        <option value="retail">Cá nhân</option>
-                        <option value="wholesale">Siêu thị / Đại lý</option>
+                        <option value="retail" style="color:#0f172a;background:#ffffff;">Cá nhân</option>
+                        <option value="wholesale" style="color:#0f172a;background:#ffffff;">Siêu thị / Đại lý</option>
                     </select>
                 </div>
             </div>
