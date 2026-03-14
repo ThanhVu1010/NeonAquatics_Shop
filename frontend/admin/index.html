@@ -60,6 +60,11 @@
                     <span class="font-medium text-sm">Tổng quan</span>
                 </a>
                 <a class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-primary/5 hover:text-primary-accent transition-colors"
+                    data-tab="analytics" onclick="switchTab('analytics')">
+                    <span class="material-symbols-outlined">monitoring</span>
+                    <span class="font-medium text-sm">Phân tích</span>
+                </a>
+                <a class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-primary/5 hover:text-primary-accent transition-colors"
                     data-tab="products" onclick="switchTab('products')">
                     <span class="material-symbols-outlined">inventory_2</span>
                     <span class="font-medium text-sm">Nguồn hàng</span>
@@ -252,6 +257,102 @@
                 </div>
             </div>
             <!-- end Dashboard Tab -->
+
+            <!-- Analytics Tab -->
+            <div class="tab-content w-full p-4 md:p-8 hidden" id="tab-analytics">
+                <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold">Phan tich van hanh</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Tap trung ton kho, san pham va khach hang (khong dung bao gia)</p>
+                    </div>
+                    <button onclick="renderAnalytics()"
+                        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-primary-accent/20 bg-primary/10 text-primary-accent hover:bg-primary/20 transition-colors text-sm font-medium">
+                        <span class="material-symbols-outlined text-base">refresh</span>
+                        Lam moi du lieu
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-6">
+                    <article class="bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/10 rounded-xl p-5">
+                        <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Tong von ton kho</p>
+                        <p class="text-2xl font-bold text-primary" id="anMetricTotalValue">0 d</p>
+                    </article>
+                    <article class="bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/10 rounded-xl p-5">
+                        <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Gia ban trung binh / san pham</p>
+                        <p class="text-2xl font-bold" id="anMetricAvgQuote">0 d</p>
+                    </article>
+                    <article class="bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/10 rounded-xl p-5">
+                        <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Ty le con hang</p>
+                        <p class="text-2xl font-bold text-emerald-500" id="anMetricClosedRate">0%</p>
+                    </article>
+                    <article class="bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/10 rounded-xl p-5">
+                        <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Ty le khach si</p>
+                        <p class="text-2xl font-bold text-cyan-500" id="anMetricRepeatRate">0%</p>
+                    </article>
+                    <article class="bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/10 rounded-xl p-5">
+                        <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">San pham sap het hang</p>
+                        <p class="text-2xl font-bold text-orange-500" id="anMetricLowStock">0</p>
+                    </article>
+                    <article class="bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/10 rounded-xl p-5">
+                        <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">San pham het hang</p>
+                        <p class="text-2xl font-bold text-red-500" id="anMetricOutStock">0</p>
+                    </article>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                    <section class="xl:col-span-2 space-y-6">
+                        <div class="bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/10 rounded-xl p-6">
+                            <div class="flex items-center justify-between mb-4 gap-3">
+                                <h3 class="text-lg font-bold">Gia tri ton kho theo dong hang</h3>
+                                <span class="text-xs text-slate-500 dark:text-slate-400">Ton * gia nhap</span>
+                            </div>
+                            <div class="space-y-3" id="anRevenueTrend"></div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div class="bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/10 rounded-xl p-6">
+                                <h3 class="text-lg font-bold mb-4">Top dong hang theo gia tri ton</h3>
+                                <div class="space-y-3" id="anTopCategories"></div>
+                            </div>
+                            <div class="bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/10 rounded-xl p-6">
+                                <h3 class="text-lg font-bold mb-4">Top san pham theo gia tri ton</h3>
+                                <div class="space-y-3" id="anTopProducts"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="space-y-6">
+                        <div class="bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/10 rounded-xl p-6">
+                            <h3 class="text-lg font-bold mb-4">Khach moi gan day</h3>
+                            <div class="space-y-3" id="anTopCustomers"></div>
+                        </div>
+                        <div class="bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/10 rounded-xl p-6">
+                            <h3 class="text-lg font-bold mb-4">Canh bao ton kho</h3>
+                            <div class="space-y-3" id="anStockAlerts"></div>
+                        </div>
+                        <div class="bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/10 rounded-xl p-6">
+                            <h3 class="text-lg font-bold mb-4">Goi y hanh dong</h3>
+                            <div class="space-y-3" id="anActionHints"></div>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                    <section class="bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/10 rounded-xl p-6">
+                        <h3 class="text-lg font-bold mb-4">Phan khuc gia san pham</h3>
+                        <div class="space-y-3" id="anSegmentMix"></div>
+                    </section>
+                    <section class="bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/10 rounded-xl p-6">
+                        <h3 class="text-lg font-bold mb-4">Co cau loai khach hang</h3>
+                        <div class="space-y-3" id="anStatusMix"></div>
+                    </section>
+                    <section class="bg-slate-100 dark:bg-primary/5 border border-slate-200 dark:border-primary-accent/10 rounded-xl p-6">
+                        <h3 class="text-lg font-bold mb-4">Thong tin du lieu</h3>
+                        <div class="space-y-3" id="anDataWindow"></div>
+                    </section>
+                </div>
+            </div>
+            <!-- end Analytics Tab -->
 
             <!-- Categories Tab (recovered) -->
             <div class="tab-content w-full p-4 md:p-8 hidden" id="tab-categories">
@@ -767,6 +868,7 @@
     <script src="js/products.js"></script>
     <script src="js/customers.js"></script>
     <script src="js/quotes.js"></script>
+    <script src="js/analytics.js"></script>
     <script src="js/settings.js"></script>
     <script src="js/shopee.js"></script>
     <script src="js/app.js"></script>

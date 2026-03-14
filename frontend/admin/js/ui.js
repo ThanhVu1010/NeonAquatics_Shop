@@ -92,6 +92,7 @@ function switchTab(tabName) {
     });
     const titles = {
         dashboard: 'Tổng quan',
+        analytics: 'Phân tích kinh doanh',
         products: 'Quản lý nguồn hàng',
         quotes: 'Quản lý báo giá',
         customers: 'Quản lý khách hàng',
@@ -102,6 +103,7 @@ function switchTab(tabName) {
     if (titleEl) titleEl.textContent = titles[tabName] || '';
 
     if (tabName === 'dashboard') renderDashboard();
+    if (tabName === 'analytics' && typeof renderAnalytics === 'function') renderAnalytics();
     if (tabName === 'categories') renderCategories();
     if (tabName === 'products') { populateCategoryFilters(); renderProducts(); }
     if (tabName === 'quotes') renderQuotes();
